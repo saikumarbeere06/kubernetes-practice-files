@@ -1,0 +1,39 @@
+# To demonstrate configmap and secret as a volumes to the application
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: myapp-deployment-file
+  name: myapp-deployment-file
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-deployment-file
+  template:
+    metadata:
+      labels:
+        app: myapp-deployment-file
+    spec:
+      containers:
+      - image: busybox:1.28
+        name: my-app
+        command: ['sh', '-c', "cat /mysql/db-config/mysql.conf; cat /mysql/db-secret/secret.conf; sleep 20"] # to display the content of files which we are passing through configmap and secret to the application(to test the demo)
+        # cat /mysql/db-config/mysql.conf here /mysql/db-conf is mount path there our application reading and writing our data so to display that we have mention the file name(mysql.conf) which we define in config-file.yaml
+        volumeMounts:
+        - name: db-config
+          mountPath: /mysql/db-config
+        - name: db-secret
+          mountPath: /mysql/db-secret
+          readOnly: true # to set our application without modifying the data inside it because it's a secret file
+
+      volumes:
+      - name: db-config
+        configMap:
+          name: my-app-config-file
+      - name: db-secret
+        secret:
+          secretName: myapp-secret-file
