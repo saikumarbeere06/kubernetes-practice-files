@@ -1,0 +1,13 @@
+# configmap as a volume to the application
+# passing external configurations to the application as a file
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-app-config-file  
+data:
+  mysql.conf: |  # mysql.conf is external configuration file name ## | symbol is used to pass the content to that file (multi line string) key: value(filename: filecontents)
+    db_host
+    port=2020
+    db_url
+    db_data
