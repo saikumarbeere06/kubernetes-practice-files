@@ -1,0 +1,38 @@
+# deployment file to demonstrate configmap and secret and passing configmap and secret as env to the application
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: myapp-deployment
+  name: myapp-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-deployment
+  template:
+    metadata:
+      labels:
+        app: myapp-deployment
+    spec:
+      containers:
+      - image: busybox:1.28
+        name: my-app
+        command: ['sh', '-c',"printenv MYSQL_SERVER USERNAME  PASSWORD; sleep 20"] # to print the config and secret values which we are passing to the application (to test our demo)
+        env:
+        - name: MYSQL_SERVER
+          valueFrom:
+            configMapKeyRef:
+              name: myapp-config   # configmap name in the config yaml
+              key: db_host         # key name in the config yaml
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: myapp-secret #secret name which we created earlier for this application
+              key: username # it's a key name in the secret yaml file
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: myapp-secret  
+              key: password
