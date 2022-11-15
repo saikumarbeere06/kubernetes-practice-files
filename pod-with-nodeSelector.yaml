@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: my-app
+spec:
+  containers:
+  - name: my-app
+    image: nginx
+  #nodeName: worker1       #simpliest way to schedule particular pod on particular node
+  nodeSelector:           # if infra is dynamic then we will use node slector to scedule pods, it works on node labels
+    type: cpu 
