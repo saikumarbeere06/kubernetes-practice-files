@@ -1,0 +1,35 @@
+kind: Deployment
+metadata:
+  name: nginx-pod
+  labels:
+    app: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx
+        resources:
+          requests:            #requesting cpu and memory for our application
+            memory: 64Mi
+            cpu: 128m
+          limits:              # due to some application spikes we are limiting resources without going beyond that limit
+            memory: 128Mi
+            cpu: 256m
+      - name: log-sidecar
+        image: busybox:1.28
+        command: ['sh', '-c', "while true; do echo synch app logs; sleep 20; done"]
+        resources:
+          requests:
+            memory: 128Mi
+            cpu: 64m
+          limits:
+            memory: 256Mi
+            cpu: 128m
