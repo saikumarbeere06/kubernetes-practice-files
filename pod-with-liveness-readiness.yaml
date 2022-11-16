@@ -1,0 +1,21 @@
+kind: Pod
+metadata:
+  name: nginx-pod1
+  labels:
+    app: my-app
+spec:
+  containers:
+  - name: my-app
+    image: nginx
+    ports:
+    - containerPort: 80
+    readinessProbe:
+      initialDelaySeconds: 10
+      periodSeconds: 5
+      tcpSocket:
+        port: 80
+    livenessProbe:
+      initialDelaySeconds: 5
+      periodSeconds: 15
+      tcpSocket:
+        port: 80
